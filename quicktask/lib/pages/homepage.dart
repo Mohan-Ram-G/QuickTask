@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:parse_server_sdk/parse_server_sdk.dart';
 
 class homePage extends StatefulWidget {
   static const routeName = '/home-page';
 
-  const homePage({Key? key}) : super(key: key);
+  const homePage({super.key});
 
   @override
   _homePageState createState() => _homePageState();
@@ -14,7 +13,7 @@ class homePage extends StatefulWidget {
 class _homePageState extends State<homePage> {
   String _selectedPriority = 'Low'; // Default priority
   DateTime selectedDate = DateTime.now();
-  TextEditingController _taskNameController = TextEditingController();
+  final TextEditingController _taskNameController = TextEditingController();
   bool _isOverdue = false; // Initialize overdue checkbox value
 
   Future<void> _selectDate(BuildContext context) async {
@@ -79,7 +78,7 @@ class _homePageState extends State<homePage> {
                         _clearFields();
                         Navigator.of(context).pop();
                       },
-                      child: Icon(
+                      child: const Icon(
                         Icons.close,
                         color: Colors.red,
                       ),
@@ -90,26 +89,26 @@ class _homePageState extends State<homePage> {
                   thickness: 1.2,
                   color: Colors.blue[900],
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 TextField(
                   controller: _taskNameController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Enter Task Name',
                   ),
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 Container(
                   child: Row(
                     children: [
-                      Container(
+                      SizedBox(
                         width: (MediaQuery.of(context).size.width / 2 - 20),
                         child: Text(
                           "${selectedDate.toLocal()}".split(' ')[0],
-                          style: TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.black),
                         ),
                       ),
-                      SizedBox(width: 20),
-                      Container(
+                      const SizedBox(width: 20),
+                      SizedBox(
                         width: (MediaQuery.of(context).size.width / 2 - 30),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -127,9 +126,9 @@ class _homePageState extends State<homePage> {
                     ],
                   ),
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Select Priority',
                   ),
                   value: _selectedPriority,
@@ -146,14 +145,14 @@ class _homePageState extends State<homePage> {
                     );
                   }).toList(),
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 Row(
                   children: [
-                    Text(
+                    const Text(
                       'Overdue?',
                       style: TextStyle(color: Colors.black),
                     ),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     Container(
                       // decoration: BoxDecoration(
                       //   border: Border.all(color: Colors.red),
@@ -171,14 +170,14 @@ class _homePageState extends State<homePage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   width: MediaQuery.of(context).size.width,
                   height: 100,
                   child: Row(
                     children: [
-                      Container(
+                      SizedBox(
                         width: (MediaQuery.of(context).size.width / 2) - 40,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -197,8 +196,8 @@ class _homePageState extends State<homePage> {
                           ),
                         ),
                       ),
-                      SizedBox(width: 20),
-                      Container(
+                      const SizedBox(width: 20),
+                      SizedBox(
                         width: (MediaQuery.of(context).size.width / 2) - 40,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(

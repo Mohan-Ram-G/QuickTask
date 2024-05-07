@@ -39,6 +39,7 @@ dependencies:
   intl: ^0.17.0
   parse_server_sdk_flutter: ^7.0.1
 
+  parse_server_sdk: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

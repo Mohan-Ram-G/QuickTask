@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:parse_server_sdk/parse_server_sdk.dart';
 
 class loginPage extends StatelessWidget {
   static const routeName = '/login-page';
+
+  const loginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class loginPage extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   color: Colors.yellowAccent),
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -35,13 +36,13 @@ class loginPage extends StatelessWidget {
                   onPressed: () {
                     _showSignUpModal(context);
                   },
-                  child: Text('Sign Up'),
+                  child: const Text('Sign Up'),
                 ),
                 ElevatedButton(
                   onPressed: () {
                     _showLoginModal(context);
                   },
-                  child: Text('Log In'),
+                  child: const Text('Log In'),
                 ),
               ],
             ),
@@ -78,7 +79,7 @@ class loginPage extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () => Navigator.of(context).pop(),
-                  child: Icon(
+                  child: const Icon(
                     Icons.close,
                     color: Colors.red,
                   ),
@@ -89,24 +90,24 @@ class loginPage extends StatelessWidget {
               thickness: 1.2,
               color: Colors.blue[900],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Add your sign up fields here
-            TextField(
+            const TextField(
               decoration: InputDecoration(
                 labelText: 'User ID',
               ),
             ),
-            TextField(
+            const TextField(
               decoration: InputDecoration(
                 labelText: 'Full Name',
               ),
             ),
-            TextField(
+            const TextField(
               decoration: InputDecoration(
                 labelText: 'Email ID',
               ),
             ),
-            TextField(
+            const TextField(
               decoration: InputDecoration(
                 labelText: 'Phone Number',
               ),
@@ -116,7 +117,7 @@ class loginPage extends StatelessWidget {
               decoration: InputDecoration(
                 labelText: 'Password',
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.visibility),
+                  icon: const Icon(Icons.visibility),
                   onPressed: () {
                     // Toggle password visibility
                   },
@@ -128,19 +129,19 @@ class loginPage extends StatelessWidget {
               decoration: InputDecoration(
                 labelText: 'Confirm Password',
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.visibility),
+                  icon: const Icon(Icons.visibility),
                   onPressed: () {
                     // Toggle password visibility
                   },
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 // Implement sign up logic
               },
-              child: Text('Sign Up'),
+              child: const Text('Sign Up'),
             ),
           ],
         ),
@@ -170,7 +171,7 @@ class loginPage extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () => Navigator.of(context).pop(),
-                  child: Icon(
+                  child: const Icon(
                     Icons.close,
                     color: Colors.red,
                   ),
@@ -181,9 +182,9 @@ class loginPage extends StatelessWidget {
               thickness: 1.2,
               color: Colors.blue[900],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Add your login fields here
-            TextField(
+            const TextField(
               decoration: InputDecoration(
                 labelText: 'Email, User ID, or Phone Number',
               ),
@@ -193,19 +194,19 @@ class loginPage extends StatelessWidget {
               decoration: InputDecoration(
                 labelText: 'Password',
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.visibility),
+                  icon: const Icon(Icons.visibility),
                   onPressed: () {
                     // Toggle password visibility
                   },
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 // Implement login logic
               },
-              child: Text('Log In'),
+              child: const Text('Log In'),
             ),
           ],
         ),
