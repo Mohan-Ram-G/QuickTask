@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 class homePage extends StatefulWidget {
   static const routeName = '/home-page';
-  final String userid;
 
-  const homePage({Key? key, required this.userid}) : super(key: key);
+  const homePage({Key? key}) : super(key: key);
 
   @override
   _homePageState createState() => _homePageState();
@@ -15,29 +13,17 @@ class homePage extends StatefulWidget {
 class _homePageState extends State<homePage> {
   String _selectedPriority = 'Low'; // Default priority
   DateTime selectedDate = DateTime.now();
-  final TextEditingController _taskNameController = TextEditingController();
-  bool _isOverdue = false; // Initialize overdue checkbox value
-  List<ParseObject> tasks = []; // List to store tasks
-
-  @override
-  void initState() {
-    super.initState();
-    // Call the function when the page initializes
-    getTaskList();
-  }
+  TextEditingController _taskNameController = TextEditingController();
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2015, 8),
-      lastDate: DateTime(2101),
-    );
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
-        // Automatically set the "Overdue?" checkbox if the selectedDate is in the past
-        _isOverdue = picked.isBefore(DateTime.now());
       });
     }
   }
@@ -88,7 +74,7 @@ class _homePageState extends State<homePage> {
                         _clearFields();
                         Navigator.of(context).pop();
                       },
-                      child: const Icon(
+                      child: Icon(
                         Icons.close,
                         color: Colors.red,
                       ),
@@ -99,35 +85,36 @@ class _homePageState extends State<homePage> {
                   thickness: 1.2,
                   color: Colors.blue[900],
                 ),
-                const SizedBox(height: 20.0),
+                SizedBox(height: 20.0),
                 TextField(
-                  controller: _taskNameController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Enter Task Name',
                   ),
                 ),
-                const SizedBox(height: 20.0),
+                SizedBox(height: 20.0),
                 Container(
+                  // padding: const EdgeInsets.symmetric(horizontal: 20),
+                  // width: MediaQuery.of(context).size.width,
+                  // height: 100,
                   child: Row(
                     children: [
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 2 - 20),
-                        child: Text(
-                          "${selectedDate.toLocal()}".split(' ')[0],
-                          style: const TextStyle(color: Colors.black),
-                        ),
+                      Container(
+                        width: (MediaQuery.of(context).size.width * 2 / 3 - 20),
+                        child: Text("${selectedDate.toLocal()}".split(' ')[0],
+                            style: TextStyle(color: Colors.black)),
                       ),
-                      const SizedBox(width: 20),
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 2 - 30),
+                      SizedBox(width: 20),
+                      Container(
+                        width: (MediaQuery.of(context).size.width / 3 - 20),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.amber[300]),
+                            backgroundColor: Color.fromARGB(255, 5, 45, 206),
+                          ),
                           onPressed: () => _selectDate(context),
                           child: Text(
                             'Select Due Date',
                             style: GoogleFonts.aBeeZee(
-                              color: Colors.black54,
+                              color: Colors.black,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -136,9 +123,9 @@ class _homePageState extends State<homePage> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 20.0),
+                SizedBox(height: 20.0),
                 DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Select Priority',
                   ),
                   value: _selectedPriority,
@@ -155,39 +142,14 @@ class _homePageState extends State<homePage> {
                     );
                   }).toList(),
                 ),
-                const SizedBox(height: 20.0),
-                Row(
-                  children: [
-                    const Text(
-                      'Overdue?',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    const SizedBox(width: 20),
-                    Container(
-                      // decoration: BoxDecoration(
-                      //   border: Border.all(color: Colors.red),
-                      //   shape: BoxShape.circle,
-                      // ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(3.0),
-                        child: Checkbox(
-                          value: _isOverdue,
-                          onChanged: null, // Make the checkbox not editable
-                          checkColor: Colors.red,
-                          activeColor: Colors.yellow,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20.0),
+                SizedBox(height: 20.0),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   width: MediaQuery.of(context).size.width,
                   height: 100,
                   child: Row(
                     children: [
-                      SizedBox(
+                      Container(
                         width: (MediaQuery.of(context).size.width / 2) - 40,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -206,8 +168,8 @@ class _homePageState extends State<homePage> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 20),
-                      SizedBox(
+                      SizedBox(width: 20),
+                      Container(
                         width: (MediaQuery.of(context).size.width / 2) - 40,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -239,26 +201,11 @@ class _homePageState extends State<homePage> {
       ),
     );
   }
-
-  void _clearFields() {
+    void _clearFields() {
     setState(() {
       _taskNameController.clear();
-      _selectedPriority = 'Low'; // Reset the priority
-      selectedDate = DateTime.now(); // Reset the date
-      _isOverdue = false;
+      _selectedPriority = 'Low';
+      selectedDate = DateTime.now();
     });
-  }
-
-  Future<List<ParseObject>> getTaskList() async {
-    QueryBuilder<ParseObject> querytasks =
-        QueryBuilder<ParseObject>(ParseObject('Todo'))
-          ..whereEqualTo('UserId', widget.userid);
-    final ParseResponse apiResponse = await querytasks.query();
-
-    if (apiResponse.success && apiResponse.results != null) {
-      return apiResponse.results as List<ParseObject>;
-    } else {
-      return [];
-    }
   }
 }
