@@ -16,12 +16,12 @@ class homePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<homePage> {
-  String selectedPriority = 'Low'; // Default priority
+  String selectedPriority = 'Low';
   DateTime selectedDate = DateTime.now();
   final TextEditingController taskNameController = TextEditingController();
-  bool isOverdue = false; // Initialize overdue checkbox value
-  bool isCompleted = false; // Initialize overdue checkbox value
-  List<ParseObject> tasks = []; // List to store tasks
+  bool isOverdue = false;
+  bool isCompleted = false;
+  List<ParseObject> tasks = [];
 
   @override
   void initState() {
@@ -31,7 +31,6 @@ class _HomePageState extends State<homePage> {
       _fetchTaskList(context);
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +84,6 @@ class _HomePageState extends State<homePage> {
                           color: Colors.black54, fontWeight: FontWeight.bold),
                     ),
                     onTap: () {
-                      // Show bottom sheet with task details
                       showModalBottomSheet(
                         context: context,
                         builder: (BuildContext context) => Container(
@@ -111,7 +109,6 @@ class _HomePageState extends State<homePage> {
                                   DateFormat('dd/MMM/yyyy').format(dueDate)),
                               _buildTaskDetailRow('Priority', priority),
                               _buildTaskDetailRow('Status', status),
-                              // Add other task details here
                               const SizedBox(height: 20),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
@@ -120,20 +117,16 @@ class _HomePageState extends State<homePage> {
                                     style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.green[300]),
                                     onPressed: () async {
-                                      // Show bottom sheet with task details
                                       showModalBottomSheet(
                                         context: context,
                                         builder: (BuildContext context) {
-                                          // Get the task details
                                           String initialTaskName = taskName;
                                           String initialPriority = priority;
                                           bool initialIsCompleted = completed;
                                           DateTime initialDueDate = dueDate;
                                           bool initialIsOverdue =
                                               dueDate.isBefore(DateTime
-                                                  .now()); // Determine if the task is overdue
-
-                                          // Controller for the editable task name field
+                                                  .now());
                                           TextEditingController
                                               editTaskNameController =
                                               TextEditingController(
@@ -177,7 +170,7 @@ class _HomePageState extends State<homePage> {
                                                       controller:
                                                           editDueDateController,
                                                       readOnly:
-                                                          true, // Make the due date field read-only
+                                                          true,
                                                       decoration:
                                                           const InputDecoration(
                                                         hintText:
@@ -203,12 +196,12 @@ class _HomePageState extends State<homePage> {
                                                             initialIsOverdue =
                                                                 picked.isBefore(
                                                                     DateTime
-                                                                        .now()); // Update overdue flag
+                                                                        .now());
                                                             editDueDateController
                                                                 .text = DateFormat(
                                                                     'dd/MMM/yyyy')
                                                                 .format(
-                                                                    picked); // Update the controller value
+                                                                    picked);
                                                           });
                                                         }
                                                       },
@@ -263,7 +256,7 @@ class _HomePageState extends State<homePage> {
                                                             value:
                                                                 initialIsOverdue,
                                                             onChanged:
-                                                                null, // Make the checkbox not editable
+                                                                null,
                                                             checkColor:
                                                                 Colors.red,
                                                             activeColor:
@@ -300,9 +293,9 @@ class _HomePageState extends State<homePage> {
                                                               });
                                                             },
                                                             checkColor: Colors
-                                                                .green, // Color of the check icon
+                                                                .green,
                                                             activeColor: Colors
-                                                                .white, // Background color when checked
+                                                                .white,
                                                           ),
                                                         ),
                                                       ],
@@ -319,8 +312,7 @@ class _HomePageState extends State<homePage> {
                                                                   backgroundColor:
                                                                       Colors.green[
                                                                           300]),
-                                                          onPressed: () async {
-                                                            // Update the task
+                                                          onPressed: () async {                                                            
                                                             bool updated = await updateTask(
                                                                 objectid,
                                                                 editTaskNameController
@@ -401,14 +393,14 @@ class _HomePageState extends State<homePage> {
                                               TextButton(
                                                 onPressed: () {
                                                   Navigator.of(context).pop(
-                                                      false); // User doesn't want to delete
+                                                      false);
                                                 },
                                                 child: const Text("No"),
                                               ),
                                               TextButton(
                                                 onPressed: () {
                                                   Navigator.of(context).pop(
-                                                      true); // User wants to delete
+                                                      true);
                                                 },
                                                 child: const Text("Yes"),
                                               ),
@@ -449,16 +441,10 @@ class _HomePageState extends State<homePage> {
         onPressed: () => showModalBottomSheet(
           context: context,
           builder: (BuildContext context) {
-            // Initial values for creating a new task
             String initialPriority = 'Low';
             DateTime initialDueDate = DateTime.now();
             bool initialIsOverdue = false;
             bool initialIsCompleted = false;
-
-            // Controller for the editable task name field
-            TextEditingController createTaskNameController =
-                TextEditingController();
-
             return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
                 return Container(
@@ -480,8 +466,11 @@ class _HomePageState extends State<homePage> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              // Clear fields and close bottom sheet
-                              createTaskNameController.clear();
+                              String taskName = taskNameController.text;
+                              if (taskName.isNotEmpty) {
+                                taskNameController
+                                    .clear();
+                              }
                               Navigator.of(context).pop();
                             },
                             child: const Icon(
@@ -498,14 +487,14 @@ class _HomePageState extends State<homePage> {
                       const SizedBox(height: 20.0),
                       _buildEditableTaskDetailRow(
                         'Task Name',
-                        createTaskNameController,
+                        taskNameController,
                       ),
                       TextField(
                         controller: TextEditingController(
                           text:
                               DateFormat('dd/MMM/yyyy').format(initialDueDate),
                         ),
-                        readOnly: true, // Make the due date field read-only
+                        readOnly: true,
                         decoration: const InputDecoration(
                           hintText: 'Select Due Date',
                         ),
@@ -520,7 +509,7 @@ class _HomePageState extends State<homePage> {
                             setState(() {
                               initialDueDate = picked;
                               initialIsOverdue = picked.isBefore(
-                                  DateTime.now()); // Update overdue flag
+                                  DateTime.now());
                             });
                           }
                         },
@@ -555,7 +544,7 @@ class _HomePageState extends State<homePage> {
                             padding: const EdgeInsets.all(3.0),
                             child: Checkbox(
                               value: initialIsOverdue,
-                              onChanged: null, // Make the checkbox not editable
+                              onChanged: null,
                               checkColor: Colors.red,
                               activeColor: Colors.yellow,
                             ),
@@ -580,9 +569,9 @@ class _HomePageState extends State<homePage> {
                                 });
                               },
                               checkColor:
-                                  Colors.green, // Color of the check icon
+                                  Colors.green,
                               activeColor:
-                                  Colors.white, // Background color when checked
+                                  Colors.white,
                             ),
                           ),
                         ],
@@ -596,7 +585,7 @@ class _HomePageState extends State<homePage> {
                               backgroundColor: Colors.green[300],
                             ),
                             onPressed: () async {
-                              String taskName = createTaskNameController.text;
+                              String taskName = taskNameController.text;
                               if (taskName.isEmpty) {
                                 _showDialog(
                                     context, "Task Name cannot be empty");
@@ -614,11 +603,11 @@ class _HomePageState extends State<homePage> {
                                   context,
                                   'Task "$taskName" has been added',
                                 );
-                                createTaskNameController
-                                    .clear(); // Close the dialog
+                                taskNameController
+                                    .clear();
                                 _fetchTaskList(
                                   context,
-                                ); // Fetch task list after adding a task
+                                );
                               } else {
                                 _showDialog(
                                   context,
@@ -640,8 +629,10 @@ class _HomePageState extends State<homePage> {
                               backgroundColor: Colors.red[300],
                             ),
                             onPressed: () {
-                              // Clear fields and close bottom sheet
-                              createTaskNameController.clear();
+                              String taskName = taskNameController.text;
+                              if (taskName.isNotEmpty) {
+                                taskNameController.clear();
+                              }
                               Navigator.of(context).pop();
                             },
                             child: const Text(
@@ -668,7 +659,6 @@ class _HomePageState extends State<homePage> {
       ),
     );
   }
-
 
   Future<void> _fetchTaskList(BuildContext context) async {
     try {
@@ -707,12 +697,12 @@ class _HomePageState extends State<homePage> {
       if (response.success &&
           response.results != null &&
           response.results!.isNotEmpty) {
-        return ''; // Task created
+        return '';
       } else {
-        return response.error!.message; // Task creation failed
+        return response.error!.message;
       }
     } catch (e) {
-      return e.toString(); // Task creation failed due to exception
+      return e.toString();
     }
   }
 
@@ -723,9 +713,9 @@ class _HomePageState extends State<homePage> {
       if (response.success &&
           response.results != null &&
           response.results!.isNotEmpty) {
-        return true; // Task created
+        return true;
       } else {
-        return false; // Task creation failed
+        return false;
       }
     } catch (e) {
       return false;
@@ -746,9 +736,9 @@ class _HomePageState extends State<homePage> {
       if (response.success &&
           response.results != null &&
           response.results!.isNotEmpty) {
-        return true; // Task created
+        return true;
       } else {
-        return false; // Task creation failed
+        return false;
       }
     } catch (e) {
       return false;
@@ -769,7 +759,7 @@ class _HomePageState extends State<homePage> {
         case 'high':
           return Colors.red;
         default:
-          return Colors.white; // Default color
+          return Colors.white;
       }
     }
   }
@@ -784,7 +774,7 @@ class _HomePageState extends State<homePage> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
               child: const Text("OK"),
             ),
@@ -825,7 +815,7 @@ class _HomePageState extends State<homePage> {
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
           SizedBox(
-            width: 200, // Adjust width as needed
+            width: 200,
             child: TextField(
               controller: controller,
               decoration: const InputDecoration(

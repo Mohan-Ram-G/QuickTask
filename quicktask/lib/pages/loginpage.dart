@@ -155,7 +155,6 @@ class loginPage extends StatelessWidget {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
-                  // Implement sign up logic
                   String userId = userIdController.text.toUpperCase();
                   String fullName = fullNameController.text;
                   String email = emailController.text;
@@ -163,13 +162,10 @@ class loginPage extends StatelessWidget {
                   String password = passwordController.text;
                   String confirmPassword = confirmPasswordController.text;
 
-                  // Check if passwords match
                   if (password != confirmPassword) {
-                    // Passwords don't match, show error
                     _showDialog(context, 'Passwords do not match');
                     return;
                   } else if (password.isEmpty || confirmPassword.isEmpty) {
-                    // Passwords don't match, show error
                     _showDialog(context, 'Please provide password');
                     return;
                   }
@@ -183,8 +179,6 @@ class loginPage extends StatelessWidget {
                         context, 'User already exists. Please sign in.');
                     return;
                   }
-
-                  // Call createUser function
                   String userCreated = await createUser(
                       fullName, userId, email, phone, password);
                   if (userCreated.isEmpty) {
@@ -200,7 +194,6 @@ class loginPage extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (context) => homePage(userid: userId)),
                     );
-                    // Close the bottom sheet and clear the text controllers
                     userIdController.clear();
                   } else {
                     _showDialog(context, userCreated);
@@ -309,12 +302,12 @@ class loginPage extends StatelessWidget {
 
       final response = await user.save();
       if (response.success) {
-        return ''; // No error, return empty string
+        return '';
       } else {
-        return response.error!.message; // Return error message
+        return response.error!.message;
       }
     } catch (e) {
-      return e.toString(); // Return exception message
+      return e.toString();
     }
   }
 
@@ -332,12 +325,12 @@ class loginPage extends StatelessWidget {
       if (response.success &&
           response.results != null &&
           response.results!.isNotEmpty) {
-        return true; // User exists
+        return true;
       } else {
-        return false; // User does not exist
+        return false;
       }
     } catch (e) {
-      return false; // Assume user does not exist in case of any error
+      return false;
     }
   }
 }
@@ -352,7 +345,7 @@ void _showDialog(BuildContext context, String alertMsg) {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
+              Navigator.of(context).pop();
             },
             child: const Text("OK"),
           ),
