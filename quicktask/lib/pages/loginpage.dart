@@ -1,12 +1,17 @@
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'homepage.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
+
+// ignore: camel_case_types
 class loginPage extends StatelessWidget {
   static const routeName = '/login-page';
 
-  const loginPage({Key? key}) : super(key: key);
+  const loginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -113,27 +118,31 @@ class loginPage extends StatelessWidget {
               const SizedBox(height: 20),
               TextField(
                 controller: userIdController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'User ID',
                 ),
               ),
               TextField(
                 controller: fullNameController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Full Name',
                 ),
               ),
               TextField(
                 controller: emailController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Email ID',
                 ),
               ),
               TextField(
                 controller: phoneController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Phone Number',
                 ),
+                keyboardType: TextInputType.phone,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
               ),
               PasswordTextField(
                 controller: passwordController,
@@ -159,9 +168,16 @@ class loginPage extends StatelessWidget {
                     // Passwords don't match, show error
                     _showDialog(context, 'Passwords do not match');
                     return;
+                  } else if (password.isEmpty || confirmPassword.isEmpty) {
+                    // Passwords don't match, show error
+                    _showDialog(context, 'Please provide password');
+                    return;
                   }
-                  bool userExists =
-                      await getUser(userId, password, context, false);
+                  if (fullName.isEmpty || userId.isEmpty) {
+                    _showDialog(context, 'User Name or ID cannot be blank');
+                    return;
+                  }
+                  bool userExists = await getUser(userId, '');
                   if (userExists) {
                     _showDialog(
                         context, 'User already exists. Please sign in.');
@@ -169,18 +185,25 @@ class loginPage extends StatelessWidget {
                   }
 
                   // Call createUser function
-                  bool userCreated = await createUser(
-                      fullName, userId, email, phone, password, context);
-                  if (userCreated) {
-                    // Close the bottom sheet and clear the text controllers
-                    userIdController.clear();
+                  String userCreated = await createUser(
+                      fullName, userId, email, phone, password);
+                  if (userCreated.isEmpty) {
+                    Navigator.of(context).pop();
                     fullNameController.clear();
                     emailController.clear();
                     phoneController.clear();
                     passwordController.clear();
                     confirmPasswordController.clear();
-                    Navigator.of(context).pop();
+                    _showDialog(context, 'User $userId created');
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => homePage(userid: userId)),
+                    );
+                    // Close the bottom sheet and clear the text controllers
+                    userIdController.clear();
                   } else {
+                    _showDialog(context, userCreated);
                     return;
                   }
                 },
@@ -240,7 +263,7 @@ class loginPage extends StatelessWidget {
               const SizedBox(height: 20),
               TextField(
                 controller: loginController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'User ID',
                 ),
               ),
@@ -253,14 +276,12 @@ class loginPage extends StatelessWidget {
                 onPressed: () async {
                   String userId = loginController.text.toUpperCase();
                   String password = passwordController.text;
-                  bool userLoggedIn =
-                      await getUser(userId, password, context, true);
+                  bool userLoggedIn = await getUser(userId, password);
                   if (userLoggedIn) {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              homePage(userid: userId)),
+                          builder: (context) => homePage(userid: userId)),
                     );
                   }
                 },
@@ -276,51 +297,46 @@ class loginPage extends StatelessWidget {
     );
   }
 
-  Future<bool> createUser(String fullName, String userId, String email,
-      String phone, String password, BuildContext context) async {
-    if (fullName.isEmpty || userId.isEmpty) return false;
-    final user = ParseObject('UserRecords')
-      ..set('UserName', fullName)
-      ..set('UserId', userId)
-      ..set('EmailId', email)
-      ..set('MobileNo', int.parse(phone))
-      ..set('Password', password);
+  Future<String> createUser(String fullName, String userId, String email,
+      String phone, String password) async {
+    try {
+      final user = ParseObject('UserRecords')
+        ..set('UserName', fullName)
+        ..set('UserId', userId)
+        ..set('EmailId', email)
+        ..set('MobileNo', int.parse(phone))
+        ..set('Password', password);
 
-    final response = await user.save();
-    if (response.success) {
-      _showDialog(
-          context, 'User Signed Up Successfully. Please sign in to continue');
-      return true;
-    } else {
-      _showDialog(context, 'Error signing up user: ${response.error!.message}');
-      return false;
+      final response = await user.save();
+      if (response.success) {
+        return ''; // No error, return empty string
+      } else {
+        return response.error!.message; // Return error message
+      }
+    } catch (e) {
+      return e.toString(); // Return exception message
     }
   }
 
-  Future<bool> getUser(
-      String userId, String password, BuildContext context, bool dialog) async {
+  Future<bool> getUser(String userId, String password) async {
     try {
-      final query = QueryBuilder(ParseObject('UserRecords'))
-        ..whereEqualTo('UserId', userId)
-        ..whereEqualTo("Password", password);
+      final query = QueryBuilder<ParseObject>(ParseObject('UserRecords'))
+        ..whereEqualTo('UserId', userId);
+
+      if (password.isNotEmpty) {
+        query.whereEqualTo("Password", password);
+      }
 
       final response = await query.query();
 
       if (response.success &&
           response.results != null &&
           response.results!.isNotEmpty) {
-        if (dialog == true) {
-          _showDialog(context, 'Success: Redirecting to Task List');
-        }
         return true; // User exists
       } else {
-        if (dialog == true) {
-          _showDialog(context, 'Error: ${response.error!.message}');
-        }
         return false; // User does not exist
       }
     } catch (e) {
-      _showDialog(context, 'Error: $e');
       return false; // Assume user does not exist in case of any error
     }
   }
@@ -331,14 +347,14 @@ void _showDialog(BuildContext context, String alertMsg) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text("Alert"),
+        title: const Text("Alert"),
         content: Text(alertMsg),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(); // Close the dialog
             },
-            child: Text("OK"),
+            child: const Text("OK"),
           ),
         ],
       );
@@ -350,8 +366,8 @@ class PasswordTextField extends StatefulWidget {
   final String labelText;
   final TextEditingController? controller;
 
-  const PasswordTextField({Key? key, required this.labelText, this.controller})
-      : super(key: key);
+  const PasswordTextField(
+      {super.key, required this.labelText, this.controller});
 
   @override
   _PasswordTextFieldState createState() => _PasswordTextFieldState();
