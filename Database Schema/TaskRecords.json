@@ -1,0 +1,75 @@
+{
+  "className": "TaskRecords",
+  "fields": {
+    "objectId": {
+      "type": "String"
+    },
+    "createdAt": {
+      "type": "Date"
+    },
+    "updatedAt": {
+      "type": "Date"
+    },
+    "ACL": {
+      "type": "ACL"
+    },
+    "TaskName": {
+      "type": "String",
+      "required": false,
+      "defaultValue": "Your Task"
+    },
+    "Completed": {
+      "type": "Boolean",
+      "required": false,
+      "defaultValue": false
+    },
+    "Priority": {
+      "type": "String",
+      "required": false,
+      "defaultValue": "Low"
+    },
+    "DueDate": {
+      "type": "Date",
+      "required": false
+    },
+    "done": {
+      "type": "Boolean"
+    },
+    "UserId": {
+      "type": "String",
+      "required": true,
+      "defaultValue": ""
+    }
+  },
+  "classLevelPermissions": {
+    "find": {
+      "*": true
+    },
+    "count": {
+      "*": true
+    },
+    "get": {
+      "*": true
+    },
+    "create": {
+      "*": true
+    },
+    "update": {
+      "*": true
+    },
+    "delete": {
+      "*": true
+    },
+    "addField": {
+      "*": true
+    },
+    "protectedFields": {
+      "*": []
+    }
+  },
+  "indexes": {
+    "_id_": {
+      "_id": 1
+    }
+  }
+}
